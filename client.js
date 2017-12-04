@@ -2,7 +2,7 @@ var dgram = require('dgram');
 var client = dgram.createSocket('udp4');
 var inquirer = require('inquirer');
 var netmask = require('netmask').Netmask;
-var ip = require('ip')
+var ip = require('ip');
 var block = new netmask(ip.address() + '/24');
 var BROADCAST_ADDR = block.broadcast;
 
@@ -47,17 +47,11 @@ var getMessage = function() {
     {
       type: 'input',
       name: 'message',
-      message: `${name}: `
+      message: name + ': '
     }
   ]).then(function (data) {
-    // !!! NOT COMPLETE
-    //  - Broadcast message to networkj
-    //  - Re-open prompt for another message
-    //      - Possibly will need to manage buffer so that incoming messages don't
-    //        over-run the prompt
     client.setBroadcast(true);
     broadcastMessage(data.message);
-
     getMessage();
   }).catch(function (error) {
     // Otherwise output the error and exit the program
