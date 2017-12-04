@@ -20,9 +20,13 @@ client.on('listening', function () {
 //  - Need to upgrade so that name of person sending message is maintained in message
 //    ( and timestamp? )
 client.on('message', function (message, rinfo) {
-  var parsed = JSON.parse(message);
-  if(name !== parsed.name){
-    console.log(parsed.name + ': ' + parsed.message);
+  try{
+    var parsed = JSON.parse(message);
+    if(name !== parsed.name){
+      console.log(parsed.name + ': ' + parsed.message);
+    }
+  }catch(e) {
+    //invalid message
   }
 });
 
