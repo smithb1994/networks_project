@@ -20,7 +20,10 @@ client.on('listening', function () {
 //  - Need to upgrade so that name of person sending message is maintained in message
 //    ( and timestamp? )
 client.on('message', function (message, rinfo) {
-  console.log('Message from: ' + rinfo.address + ':' + rinfo.port +' - ' + message);
+  var parsed = JSON.parse(message);
+  if(name !== parsed.name){
+    console.log(parsed.user + ': ' + parsed.message);
+  }
 });
 
 client.bind(PORT);
@@ -60,11 +63,12 @@ var getMessage = function() {
   });
 };
 
-var broadcastMessage = function (data) {
-  var message = new Buffer(data);
+var broadcastMessage = function (message) {
+  var message = new Buffer(JSON.stringify({ name: name, message: message }));
   client.send(message, 0, message.length, 6024, BROADCAST_ADDR, function() {
-    console.log("Sent '" + message + "'");
-})};
+    //console.log("Sent '" + message + "'");
+  })
+};
 
 
 setName();
