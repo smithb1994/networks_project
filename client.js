@@ -1,6 +1,11 @@
 var dgram = require('dgram');
 var client = dgram.createSocket('udp4');
 var inquirer = require('inquirer');
+var netmask = require('netmask').Netmask;
+var ip = require('ip')
+var block = new netmask(ip.address() + '/24');
+var BROADCAST_ADDR = block.broadcast;
+
 
 var PORT = 6024;
 var name = '';
@@ -30,7 +35,6 @@ var setName = function() {
     }
   ]).then( function (data) {
     name = data.name;
-    console.log('YOUR NAME IS: ', name);
     getMessage();
   }).catch(function (error) {
     console.error(error);
@@ -43,7 +47,7 @@ var getMessage = function() {
     {
       type: 'input',
       name: 'message',
-      message: 'Jack: '
+      message: `${name}: `
     }
   ]).then(function (data) {
     // !!! NOT COMPLETE
@@ -51,7 +55,8 @@ var getMessage = function() {
     //  - Re-open prompt for another message
     //      - Possibly will need to manage buffer so that incoming messages don't
     //        over-run the prompt
-
+    client.setBroadcast(true);
+    broadcastMessage(data.message);
 
     getMessage();
   }).catch(function (error) {
@@ -60,6 +65,12 @@ var getMessage = function() {
     process.exit(0);
   });
 };
+
+var broadcastMessage = function (data) {
+  var message = new Buffer(data);
+  client.send(message, 0, message.length, 6024, BROADCAST_ADDR, function() {
+    console.log("Sent '" + message + "'");
+})};
 
 
 setName();
