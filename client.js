@@ -22,7 +22,7 @@ client.on('listening', function () {
 client.on('message', function (message, rinfo) {
   var parsed = JSON.parse(message);
   if(name !== parsed.name){
-    console.log(parsed.user + ': ' + parsed.message);
+    console.log(parsed.name + ': ' + parsed.message);
   }
 });
 
