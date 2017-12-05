@@ -1,38 +1,32 @@
 var dgram = require('dgram');
-var client = dgram.createSocket('udp4');
+var client = dgram.createSocket("udp4");
 var inquirer = require('inquirer');
-var netmask = require('netmask').Netmask;
-var ip = require('ip');
-var block = new netmask(ip.address() + '/24');
-var BROADCAST_ADDR = block.broadcast;
 
-
+var BROADCAST_ADDR = '255.255.255.255';
 var PORT = 6024;
 var name = '';
 
-client.on('listening', function () {
-  var address = client.address();
-  client.setBroadcast(true);
-});
-
-
-// !!! NOT COMPLETE
-//  - Need to upgrade so that name of person sending message is maintained in message
-//    ( and timestamp? )
-client.on('message', function (message, rinfo) {
+//Listen to broadcast messages
+client.on('message', function(message, info){
   try{
+    //parse JSON string
     var parsed = JSON.parse(message);
+
     if(name !== parsed.name){
+      //log user message to terminal
       console.log(parsed.name + ': ' + parsed.message);
     }
   }catch(e) {
-    //invalid message
+    //IGNORE: failed to parse message
   }
 });
 
-client.bind(PORT);
+//bind port to listen for new broadcast messages
+client.bind(PORT, function() {
+  client.setBroadcast(true);
+});
 
-
+//get name from user
 var setName = function() {
   inquirer.prompt([
     {
@@ -49,6 +43,7 @@ var setName = function() {
   });
 };
 
+//get new message from user
 var getMessage = function() {
   inquirer.prompt([
     {
@@ -57,7 +52,6 @@ var getMessage = function() {
       message: name + ': '
     }
   ]).then(function (data) {
-    client.setBroadcast(true);
     broadcastMessage(data.message);
     getMessage();
   }).catch(function (error) {
@@ -67,12 +61,11 @@ var getMessage = function() {
   });
 };
 
-var broadcastMessage = function (message) {
-  var message = new Buffer(JSON.stringify({ name: name, message: message }));
-  client.send(message, 0, message.length, 6024, BROADCAST_ADDR, function() {
-    //console.log("Sent '" + message + "'");
-  })
+//broadcast message
+var broadcastMessage = function (data) {
+  var message = new Buffer(JSON.stringify({ name: name, message: data }));
+  client.send(message, 0, message.length, PORT, BROADCAST_ADDR)
 };
 
-
+//start program, get name of user
 setName();

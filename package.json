@@ -1,5 +1,5 @@
 {
-  "name": "networks",
+  "name": "networks_project",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,10 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "inquirer": "^4.0.1",
-    "ip": "^1.1.5",
-    "lodash": "^4.17.4",
-    "netmask": "^1.0.6",
-    "q": "^1.5.1",
-    "wireless-tools": "^0.19.0"
+    "lodash": "^4.17.4"
   }
 }
