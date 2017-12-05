@@ -6,8 +6,10 @@ var network_one = dgram.createSocket("udp4");
 var network_two = dgram.createSocket("udp4");
 
 var BROADCAST_ADDR = '255.255.255.255';
-var LOCAL_PORT = 6024;
-var RELAY_PORT = 6025;
+var PORT = 6024;
+
+//log user metadata to ignore repetitive messages
+var userLog = [];
 
 //get current IPv4 addresses from adapters connected to the computer
 var IPv4_Addresses = _.map(_.values(_.omit(os.networkInterfaces(), 'lo')), function(o){
@@ -20,26 +22,41 @@ var IP_NETWORK_TWO = IPv4_Addresses[1]; //eg: 192.168.1.203
 
 //Listen to broadcast messages
 client.on('message', function(message, info){
-  //console log message to terminal, for debugging
-  console.log(message.toString());
+  try{
+    //parse JSON string
+    var parsed = JSON.parse(message);
 
-  //relay received message to both networks
-  network_one.send(message, 0, message.length, RELAY_PORT, BROADCAST_ADDR);
-  network_two.send(message, 0, message.length, RELAY_PORT, BROADCAST_ADDR);
+    //check if message has already been logged
+    if(!_.some(userLog, { uid: parsed.uid, timestamp: parsed.timestamp})){
+      //log user message to terminal
+      console.log(message.toString());
+
+      //update userLog with newest message timestamp
+      userLog = _.filter(userLog, function(o) {
+        return o.uid !== parsed.uid;
+      }).concat([{uid: parsed.uid, timestamp: parsed.timestamp}]);
+
+      //relay received message to both networks
+      network_one.send(message, 0, message.length, PORT, BROADCAST_ADDR);
+      network_two.send(message, 0, message.length, PORT, BROADCAST_ADDR);
+    }
+  }catch(e) {
+    //IGNORE: failed to parse message
+  }
 });
 
 
 //bind listening port, to listen for new broadcast messages
-client.bind(LOCAL_PORT, function() {
+client.bind(PORT, function() {
   client.setBroadcast(true);
 });
 
 //bind first networks port, to broadcast to network one
-network_one.bind(RELAY_PORT, IP_NETWORK_ONE, function () {
+network_one.bind(null, IP_NETWORK_ONE, function () {
   network_one.setBroadcast(true);
 });
 
 //bind second networks port, to broadcast to network two
-network_two.bind(RELAY_PORT, IP_NETWORK_TWO, function () {
+network_two.bind(null, IP_NETWORK_TWO, function () {
   network_two.setBroadcast(true);
 });
