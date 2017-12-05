@@ -3,10 +3,10 @@ var client = dgram.createSocket("udp4");
 var inquirer = require('inquirer');
 
 var BROADCAST_ADDR = '255.255.255.255';
-var PORT = 6024;
+var LOCAL_PORT = 6024;
 var name = '';
 
-//Listen to broadcast messages
+//Listen to broadcast messages from other users
 client.on('message', function(message, info){
   try{
     //parse JSON string
@@ -21,8 +21,8 @@ client.on('message', function(message, info){
   }
 });
 
-//bind port to listen for new broadcast messages
-client.bind(PORT, function() {
+//bind port to listen for new broadcast messages from clients
+client.bind(LOCAL_PORT, function() {
   client.setBroadcast(true);
 });
 
@@ -64,7 +64,7 @@ var getMessage = function() {
 //broadcast message
 var broadcastMessage = function (data) {
   var message = new Buffer(JSON.stringify({ name: name, message: data }));
-  client.send(message, 0, message.length, PORT, BROADCAST_ADDR)
+  client.send(message, 0, message.length, LOCAL_PORT, BROADCAST_ADDR);
 };
 
 //start program, get name of user

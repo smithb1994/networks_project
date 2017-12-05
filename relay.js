@@ -6,7 +6,7 @@ var network_one = dgram.createSocket("udp4");
 var network_two = dgram.createSocket("udp4");
 
 var BROADCAST_ADDR = '255.255.255.255';
-var LISTEN_PORT = 6024;
+var LOCAL_PORT = 6024;
 var RELAY_PORT = 6025;
 
 //get current IPv4 addresses from adapters connected to the computer
@@ -30,7 +30,7 @@ client.on('message', function(message, info){
 
 
 //bind listening port, to listen for new broadcast messages
-client.bind(LISTEN_PORT, function() {
+client.bind(LOCAL_PORT, function() {
   client.setBroadcast(true);
 });
 
