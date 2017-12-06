@@ -20,6 +20,11 @@ var IPv4_Addresses = _.map(_.values(_.omit(os.networkInterfaces(), 'lo')), funct
 var IP_NETWORK_ONE = IPv4_Addresses[0]; //eg: 192.168.1.123
 var IP_NETWORK_TWO = IPv4_Addresses[1]; //eg: 192.168.1.203
 
+//starting relay message
+console.log('==================');
+console.log('= Starting relay =');
+console.log('==================');
+
 //Listen to broadcast messages
 client.on('message', function(message, info){
   try{
