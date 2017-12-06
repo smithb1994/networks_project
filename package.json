@@ -2,10 +2,10 @@
   "name": "networks_project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "client.js",
   "scripts": {
     "client": "node client.js",
-    "server": "node server.js"
+    "relay": "node relay.js"
   },
   "author": "",
   "license": "ISC",
