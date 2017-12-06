@@ -28,7 +28,8 @@ client.on('message', function(message, info){
       }).concat([{uid: parsed.uid, timestamp: parsed.timestamp}]);
 
       //log user message to terminal
-      console.log(parsed.name + ': ' + parsed.message);
+
+      console.log("\n" + parsed.name + ': ' + parsed.message);
     }
   }catch(e) {
     //IGNORE: failed to parse message
