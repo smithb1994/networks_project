@@ -17,8 +17,8 @@ var IPv4_Addresses = _.map(_.values(_.omit(os.networkInterfaces(), 'lo')), funct
 });
 
 //IP addresses of the two network interfaces on the device
-var IP_NETWORK_ONE = IPv4_Addresses[0]; //eg: 192.168.1.123
-var IP_NETWORK_TWO = IPv4_Addresses[1]; //eg: 192.168.1.203
+var IP_NETWORK_ONE = IPv4_Addresses[0]; //eg: 192.168.1.123 (WIFI network one)
+var IP_NETWORK_TWO = IPv4_Addresses[1]; //eg: 192.168.1.203 (WIFI network two)
 
 //starting relay message
 console.log('==================');
@@ -56,12 +56,12 @@ client.bind(PORT, function() {
   client.setBroadcast(true);
 });
 
-//bind first networks port, to broadcast to network one
+//bind first network, to broadcast to network one
 network_one.bind(null, IP_NETWORK_ONE, function () {
   network_one.setBroadcast(true);
 });
 
-//bind second networks port, to broadcast to network two
+//bind second network, to broadcast to network two
 network_two.bind(null, IP_NETWORK_TWO, function () {
   network_two.setBroadcast(true);
 });
