@@ -1,5 +1,8 @@
 # Networks Project
 
+**DEMO VIDEO:**
+[https://youtu.be/o-y0IWdzlZk](https://youtu.be/o-y0IWdzlZk)
+
 This is the code for our final project for CPE 400. The idea is to build a localized version of IRC.
 On the network, we will set up "relays" and "clients." Clients will send messages to each other, and
 receive all messages sent on the network. The relays will broadcast all messages that they
